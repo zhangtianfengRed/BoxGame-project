@@ -541,8 +541,13 @@ class EmptyBox
 {
     //判断是否拥有物理效果
     public bool Boxphysic { get; set; }
-    //判断当前位置上是否拥有普通方块
-    
+
+    public Vector2Int TheGameobjetVector { get; set; }
+
+    public bool hasmoveBox(mMapData mMap)
+    {
+        return false;
+    }
     //根据调用对应合体方块的移动方法
     protected void GetscriptMove(IEdricemove edricemoveobject)
     {
@@ -552,6 +557,9 @@ class EmptyBox
 //合体类型方块，用来赋予移动方向
 class MoveBox : IEdricemove
 {
+    //判断是否拥有物理效果
+    public bool Boxphysic { get; set; }
+
     public void dircemove()
     {
         throw new System.NotImplementedException();
