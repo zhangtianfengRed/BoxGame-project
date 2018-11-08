@@ -530,6 +530,33 @@ public class Map : MonoBehaviour
 
 
 }
+//合体方块接口
+public interface IEdricemove
+{
+    void dircemove();
+}
+
+//合体类型方块母体，用来储存移动方向
+class EmptyBox
+{
+    //判断是否拥有物理效果
+    public bool Boxphysic { get; set; }
+    //判断当前位置上是否拥有普通方块
+    
+    //根据调用对应合体方块的移动方法
+    protected void GetscriptMove(IEdricemove edricemoveobject)
+    {
+        edricemoveobject.dircemove();
+    }
+}
+//合体类型方块，用来赋予移动方向
+class MoveBox : IEdricemove
+{
+    public void dircemove()
+    {
+        throw new System.NotImplementedException();
+    }
+}
 
 class mMapData
 {
