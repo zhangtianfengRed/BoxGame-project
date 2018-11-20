@@ -19,8 +19,11 @@ public class Map : MonoBehaviour
     public GameObject Target_mapData;
     public GameObject[] Moveanim = new GameObject[4];
 
+    private static int level = 8;
+
+    public GameObject Gameover;
     //临时测试地图
-    public GameObject[] map = new GameObject[4];
+    public GameObject[] map = new GameObject[12];
     mMapData mMapData;
 
     BoxMove boxmove = new BoxMove();
@@ -40,7 +43,7 @@ public class Map : MonoBehaviour
             tile_Target = Tile_Target,
             tile_Box = Tile_Box
         };
-        GameObject T = Instantiate(map[Random.Range(0, 4)], new Vector3(0, 0, 0), Quaternion.identity);
+        GameObject T = Instantiate(map[level-1], new Vector3(0, 0, 0), Quaternion.identity);
         StartMap();
 
         mMapData.ForeachBox(T);
@@ -74,6 +77,10 @@ public class Map : MonoBehaviour
             }
 
         }
+    }
+    void FixedUpdate()
+    {
+        TargetFull();
     }
 
 
@@ -135,7 +142,7 @@ public class Map : MonoBehaviour
             OnButton(Moveanim[1], new Vector2(direction._Mouse_Gameobject.transform.position.x, direction._Mouse_Gameobject.transform.position.y - 0.5f));
             StartCoroutine(StartMoveDown());
         }
-        TargetFull();
+        //TargetFull();
     }
 
     void Animoveinstance(GameObject T ,Vector2 V) {
@@ -147,7 +154,15 @@ public class Map : MonoBehaviour
     {
         if (mMapData.TargetCheck())
         {
-            SceneManager.LoadScene(0);
+            if (level < 8)
+            {
+                level += 1;
+                SceneManager.LoadScene(0);
+            }
+            else
+            {
+                Gameover.SetActive(true);
+            }
         }
     }
     //朝右推动时返回最远距离的Gameobject
@@ -507,18 +522,23 @@ public class Map : MonoBehaviour
         {
             for (int y = -1; y < mMapData.MapHigh + 1; y++)
             {
-                if (x == -1 || x == mMapData.MapWidth)
+                if (x == -1 || x == mMapData.MapWidth|| y == -1 || y == mMapData.MapHigh)
                 {
-                    GameObject T = Instantiate(mMapData.tile_Button, new Vector3Int(x, y, 0), Quaternion.identity);
-                    T.transform.parent = Buttonparent.transform;
-                    T.layer = 8;
+                    if (mapbuttonClean(x, y))
+                    {
+                        GameObject T = Instantiate(mMapData.tile_Button, new Vector3Int(x, y, 0), Quaternion.identity);
+                        T.transform.parent = Buttonparent.transform;
+                        T.layer = 8;
+                    }
+
+
                 }
-                if (y == -1 || y == mMapData.MapHigh)
-                {
-                    GameObject T = Instantiate(mMapData.tile_Button, new Vector3Int(x, y, 0), Quaternion.identity);
-                    T.transform.parent = Buttonparent.transform;
-                    T.layer = 8;
-                }
+                //if ()
+                //{
+                //    GameObject T = Instantiate(mMapData.tile_Button, new Vector3Int(x, y, 0), Quaternion.identity);
+                //    T.transform.parent = Buttonparent.transform;
+                //    T.layer = 8;
+                //}
 
 
             }
@@ -526,6 +546,19 @@ public class Map : MonoBehaviour
 
         Camera.main.transform.position = new Vector3((mMapData.MapWidth - 1) / 2, (mMapData.MapHigh - 1) / 2, -10);
 
+    }
+
+    bool mapbuttonClean(int x, int y)
+    {
+        if (x == y)
+        {
+            return false;
+        }
+        if ((x == -1 && y == mMapData.MapHigh) || (y == -1 && x == mMapData.MapWidth))
+        {
+            return false;
+        }
+        return true;
     }
 
 
